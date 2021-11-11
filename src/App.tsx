@@ -1,87 +1,39 @@
+import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, View, Image, StatusBar } from 'react-native';
-import { Button, Caption, Headline, Text, useTheme } from 'react-native-paper';
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
-const App = () => {
-  const { colors } = useTheme();
-  const styles = makeStyles(colors);
+import { DefaultTheme as NavigationDefaultTheme } from '@react-navigation/native';
+import Home from './Home';
+import Onboarding from './Onboarding';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-  return (
-    <View style={styles.container}>
-      <StatusBar
-        hidden={true}
-        backgroundColor={colors.primary}
-        animated={true}
-      />
-      <Image
-        style={styles.logo}
-        source={{
-          uri: 'https://www.firefly-iii.org/assets/logo/color.png',
-        }}
-        resizeMode="contain"
-      />
-      <Headline style={styles.title}>Welcome to{'\n'}Firefly Mobile</Headline>
-      <Text style={styles.subtitle}>Please choose your{'\n'}login method</Text>
-      <View style={styles.buttonContainer}>
-        <Button
-          onPress={() => console.log('OAuth2.0 login')}
-          style={styles.button}
-          mode="outlined">
-          OAuth2.0
-        </Button>
-        <Button
-          style={styles.button}
-          onPress={() => console.log('Token login')}
-          mode="outlined">
-          Token
-        </Button>
-      </View>
-      <Caption
-        onPress={() => console.log('Navigating to help...')}
-        style={styles.navCaption}>
-        How does it work?
-      </Caption>
-    </View>
-  );
+const theme = {
+  ...NavigationDefaultTheme,
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    ...NavigationDefaultTheme.colors,
+    primary: '#1e6581',
+    accent: '#ff715d ',
+  },
+  roundness: 2,
 };
 
-const makeStyles = (colors: ReactNativePaper.ThemeColors) => {
-  return StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    logo: {
-      alignSelf: 'center',
-      width: 105,
-      height: 133,
-      marginBottom: 50,
-    },
-    title: {
-      textAlign: 'center',
-    },
-    subtitle: {
-      marginBottom: 80,
-      textAlign: 'center',
-    },
-    buttonContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    button: {
-      margin: 10,
-      minWidth: 130,
-      minHeight: 41,
-    },
-    navCaption: {
-      top: 130,
-      color: colors.primary,
-      textDecorationLine: 'underline',
-    },
-  });
+const Stack = createNativeStackNavigator();
+
+const App = () => {
+  return (
+    <PaperProvider theme={theme}>
+      <NavigationContainer theme={theme}>
+        <Stack.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName="Onboarding">
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Onboarding" component={Onboarding} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
+  );
 };
 
 export default App;
