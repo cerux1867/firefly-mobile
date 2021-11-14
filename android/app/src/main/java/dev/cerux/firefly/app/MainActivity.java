@@ -1,4 +1,4 @@
-package com.fireflymobile;
+package dev.cerux.firefly.app;
 
 import com.facebook.react.ReactActivity;
 import android.os.Bundle;

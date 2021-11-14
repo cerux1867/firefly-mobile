@@ -1,4 +1,4 @@
-package com.fireflymobile;
+package dev.cerux.firefly.app;
 
 import android.app.Application;
 import android.content.Context;

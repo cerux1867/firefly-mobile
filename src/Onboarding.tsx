@@ -1,9 +1,18 @@
 import React from 'react';
 import { StyleSheet, View, Image, StatusBar } from 'react-native';
 import { Button, Caption, Headline, Text, useTheme } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from './NavStack';
+
+type OnboardingScreenProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'Onboarding'
+>;
 
 const Onboarding = () => {
   const { colors } = useTheme();
+  const navigation = useNavigation<OnboardingScreenProp>();
   const styles = makeStyles(colors);
 
   return (
@@ -24,14 +33,14 @@ const Onboarding = () => {
       <Text style={styles.subtitle}>Please choose your{'\n'}login method</Text>
       <View style={styles.buttonContainer}>
         <Button
-          onPress={() => console.log('OAuth2.0 login')}
+          onPress={() => console.log('OAuth login')}
           style={styles.button}
           mode="outlined">
           OAuth2.0
         </Button>
         <Button
           style={styles.button}
-          onPress={() => console.log('Token login')}
+          onPress={() => navigation.navigate('TokenLogin')}
           mode="outlined">
           Token
         </Button>
