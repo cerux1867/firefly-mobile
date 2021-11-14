@@ -3,9 +3,9 @@ import React from 'react';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
 import { DefaultTheme as NavigationDefaultTheme } from '@react-navigation/native';
-import Home from './Home';
-import Onboarding from './Onboarding';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AuthProvider } from './AuthContext';
+import NavStack from './NavStack';
+import { LocalStorageProvider } from './LocalStorageContext';
 
 const theme = {
   ...NavigationDefaultTheme,
@@ -14,24 +14,22 @@ const theme = {
     ...DefaultTheme.colors,
     ...NavigationDefaultTheme.colors,
     primary: '#1e6581',
-    accent: '#ff715d ',
+    accent: '#53baff',
+    background: '#fafafa',
   },
-  roundness: 2,
+  roundness: 6,
 };
-
-const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
     <PaperProvider theme={theme}>
-      <NavigationContainer theme={theme}>
-        <Stack.Navigator
-          screenOptions={{ headerShown: false }}
-          initialRouteName="Onboarding">
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Onboarding" component={Onboarding} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <LocalStorageProvider>
+        <AuthProvider>
+          <NavigationContainer theme={theme}>
+            <NavStack />
+          </NavigationContainer>
+        </AuthProvider>
+      </LocalStorageProvider>
     </PaperProvider>
   );
 };
