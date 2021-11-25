@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { Image, Platform, StyleSheet, View } from 'react-native';
+import React, { useCallback } from 'react';
+import { Image, StyleSheet, View } from 'react-native';
 import {
   Button,
   Checkbox,
@@ -15,12 +15,13 @@ import { useAuth } from '../AuthContext';
 
 type FormData = {
   fireflyUrl: string;
-  fireflyToken: string;
+  fireflyClientId: string;
+  fireflyClientSecret?: string;
+  rememberMe: boolean;
 };
 
-const TokenLogin = () => {
-  const [rememberMe, setRememberMe] = useState(false);
-  const { authorizeWithToken, isLoggingIn } = useAuth();
+const OAuthLogin = () => {
+  const { authorizeWithOAuth, isLoggingIn } = useAuth();
 
   const {
     control,
@@ -29,7 +30,9 @@ const TokenLogin = () => {
   } = useForm<FormData>({
     defaultValues: {
       fireflyUrl: '',
-      fireflyToken: '',
+      fireflyClientId: '',
+      fireflyClientSecret: '',
+      rememberMe: false,
     },
   });
 
@@ -38,9 +41,14 @@ const TokenLogin = () => {
 
   const onSubmit = useCallback(
     async (data: FormData) => {
-      await authorizeWithToken(data.fireflyUrl, data.fireflyToken, rememberMe);
+      await authorizeWithOAuth(
+        data.fireflyUrl,
+        data.fireflyClientId,
+        data.rememberMe,
+        data.fireflyClientSecret,
+      );
     },
-    [authorizeWithToken, rememberMe],
+    [authorizeWithOAuth],
   );
 
   return (
@@ -56,7 +64,7 @@ const TokenLogin = () => {
       </View>
       <View style={styles.signInContainer}>
         <View style={styles.signInBox}>
-          <Headline style={styles.signInHeader}>Token</Headline>
+          <Headline style={styles.signInHeader}>OAuth2.0</Headline>
           <Controller
             control={control}
             rules={{
@@ -74,6 +82,7 @@ const TokenLogin = () => {
                 error={errors.fireflyUrl ? true : false}
                 style={styles.textField}
                 label="Firefly URL"
+                keyboardType="url"
                 mode="outlined"
                 value={value}
                 onChangeText={onChange}
@@ -82,10 +91,7 @@ const TokenLogin = () => {
             )}
             name="fireflyUrl"
           />
-          <HelperText
-            style={styles.formFieldMargin}
-            type="error"
-            visible={errors.fireflyUrl ? true : false}>
+          <HelperText type="error" visible={errors.fireflyUrl ? true : false}>
             {errors.fireflyUrl?.message}
           </HelperText>
           <Controller
@@ -93,40 +99,61 @@ const TokenLogin = () => {
             rules={{
               required: {
                 value: true,
-                message: 'Token is required',
+                message: 'Client ID is required',
               },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
-                style={{
-                  ...styles.textField,
-                  ...styles.textArea,
-                }}
-                error={errors.fireflyToken ? true : false}
-                label="Token"
-                multiline={true}
-                numberOfLines={Platform.OS === 'ios' ? 0 : 6}
+                error={errors.fireflyClientId ? true : false}
+                style={styles.textField}
+                keyboardType="numeric"
+                label="Client ID"
                 mode="outlined"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
               />
             )}
-            name="fireflyToken"
+            name="fireflyClientId"
           />
-          <HelperText type="error" visible={errors.fireflyToken ? true : false}>
-            Personal access token is required
+          <HelperText
+            type="error"
+            visible={errors.fireflyClientId ? true : false}>
+            {errors.fireflyClientId?.message}
           </HelperText>
-
-          <View
-            style={{ ...styles.checkBoxContainer, ...styles.formFieldMargin }}>
-            <Checkbox
-              color={colors.primary}
-              status={rememberMe ? 'checked' : 'unchecked'}
-              onPress={() => setRememberMe(!rememberMe)}
-            />
-            <Text style={{ marginLeft: 5 }}>Remember me</Text>
-          </View>
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                error={errors.fireflyClientSecret ? true : false}
+                style={{ ...styles.textField, ...styles.formFieldMargin }}
+                label="Client secret"
+                mode="outlined"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
+            name="fireflyClientSecret"
+          />
+          <Controller
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <View
+                style={{
+                  ...styles.checkBoxContainer,
+                  ...styles.formFieldMargin,
+                }}>
+                <Checkbox
+                  color={colors.primary}
+                  status={value ? 'checked' : 'unchecked'}
+                  onPress={() => onChange(value ? false : true)}
+                />
+                <Text style={{ marginLeft: 5 }}>Remember me</Text>
+              </View>
+            )}
+            name="rememberMe"
+          />
 
           <Button
             contentStyle={styles.signInButton}
@@ -180,10 +207,6 @@ const makeStyles = (colors: ReactNativePaper.ThemeColors) => {
     textField: {
       width: '90%',
     },
-    textArea: {
-      minHeight: Platform.OS === 'ios' && 6 ? 20 * 6 : 0,
-      maxHeight: 150,
-    },
     signInButton: {
       width: '90%',
       height: 50,
@@ -200,4 +223,4 @@ const makeStyles = (colors: ReactNativePaper.ThemeColors) => {
   });
 };
 
-export default TokenLogin;
+export default OAuthLogin;

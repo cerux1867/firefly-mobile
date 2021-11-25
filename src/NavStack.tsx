@@ -4,11 +4,13 @@ import { useAuth } from './AuthContext';
 import Home from './Home';
 import Onboarding from './Onboarding';
 import TokenLogin from './login/TokenLogin';
+import OAuthLogin from './login/OAuthLogin';
 
 export type RootStackParamList = {
   Onboarding: undefined;
   Home: undefined;
   TokenLogin: undefined;
+  OAuthLogin: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -25,6 +27,7 @@ const NavStack = () => {
         <>
           <Stack.Screen name="Onboarding" component={Onboarding} />
           <Stack.Screen name="TokenLogin" component={TokenLogin} />
+          <Stack.Screen name="OAuthLogin" component={OAuthLogin} />
         </>
       )}
     </Stack.Navigator>
