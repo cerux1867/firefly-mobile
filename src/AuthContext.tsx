@@ -124,7 +124,7 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     if (auth.accessToken && auth.fireflyUrl) {
       axiosInstance.defaults.headers.common.Authorization = `Bearer ${auth.accessToken}`;
-      axiosInstance.defaults.baseURL = auth.fireflyUrl;
+      axiosInstance.defaults.baseURL = `${auth.fireflyUrl}/api/v1`;
     }
   }, [auth.accessToken, auth.fireflyUrl]);
 
