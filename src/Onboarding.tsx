@@ -33,7 +33,7 @@ const Onboarding = () => {
       <Text style={styles.subtitle}>Please choose your{'\n'}login method</Text>
       <View style={styles.buttonContainer}>
         <Button
-          onPress={() => console.log('OAuth login')}
+          onPress={() => navigation.navigate('OAuthLogin')}
           style={styles.button}
           mode="outlined">
           OAuth2.0
